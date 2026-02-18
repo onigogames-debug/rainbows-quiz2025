@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>卒団記念クイズ</title>
+    <style>
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            -webkit-user-select: none; /* 誤操作によるテキスト選択を防止 */
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            color: #ffde00;
+            margin: 5px 0;
+            text-align: center;
+        }
+
+        .slot-machine {
+            background: #333;
+            padding: 15px;
+            border-radius: 15px;
+            border: 4px solid #f1c40f;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        .display-window {
+            background-color: #eee;
+            color: #333;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        #question-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1.4;
+            color: #2c3e50;
+        }
+
+        #answer-text {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #e74c3c;
+            margin-top: 10px;
+            display: none;
+            background: #ffff00;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .btn-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 20px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px #999;
+            touch-action: manipulation; /* 連打時のズームを防止 */
+        }
+
+        .btn:active {
+            box-shadow: none;
+            transform: translateY(4px);
+        }
+
+        #start-btn { background-color: #ff0000; color: white; }
+        #stop-btn { background-color: #0000ff; color: white; }
+        #reveal-btn { 
+            background-color: #f1c40f; color: black; 
+            grid-column: span 2;
+            margin-top: 5px;
+        }
+
+        .btn:disabled {
+            background-color: #555 !important;
+            color: #888 !important;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚾️ レインボーズ 2025年度卒団クイズ ⚾️</h1>
+
+    <div class="slot-machine">
+        <div class="display-window">
+            <div id="question-text">LINEでクイズ！<br>スタートを押してね</div>
+            <div id="answer-text">？？？</div>
+        </div>
+
+        <div class="btn-container">
+            <button id="start-btn" class="btn" onclick="startSlot()">スタート！</button>
+            <button id="stop-btn" class="btn" onclick="stopSlot()" disabled>ストップ！</button>
+            <button id="reveal-btn" class="btn" onclick="revealAnswer()" disabled>正解発表</button>
+        </div>
+    </div>
+
+    <audio id="sound-roll" src="https://otologic.jp/files/free/se/pdf/Drum-Roll01-1.mp3" loop preload="auto"></audio>
+    <audio id="sound-finish" src="https://otologic.jp/files/free/se/pdf/Drum-Roll01-Finish01.mp3" preload="auto"></audio>
+
+    <script>
+        const quizData = [
+            { q: "お弁当でいつもいくらを食べているのは誰？", a: "ルイ" },
+            { q: "体重が60キロに迫っているのは誰？", a: "ルイ" },
+            { q: "練習試合中に、コーチャーで立ったまま居眠りをしてしまったのは誰？", a: "ルイ" },
+            { q: "保冷バッグの中にミニゼリー30個詰めてるのは誰？", a: "ルイ" },
+            { q: "パンイチでカリスマックスを踊るのは誰？", a: "シュンゴ" },
+            { q: "6年間で一番体型が別人級に変わったのは誰？", a: "シュンゴ" },
+            { q: "大事な公式戦の最中、電柱にぶつかって大怪我をしたのは誰？", a: "ユウセイ" },
+            { q: "イケメンなのに、いつも荷物がごちゃごちゃなのは誰？", a: "ユキト" },
+            { q: "優柔不断な友人を入部させるため、母に直談判したのは誰？", a: "ユキト" },
+            { q: "5年生の夏休み、台風で岐阜まで4時間かかったのは誰？", a: "ユキト" },
+            { q: "前日にレバーを食べ過ぎて鼻血を出しながら守っていたのは誰？", a: "そうま" },
+            { q: "試合後、草むらで泣いていると思ったら、お漏らししていたのは誰？", a: "はると" },
+            { q: "ベースに顔面から突っ込む率が高いのは誰？", a: "はると" },
+            { q: "外野フライを捕った直後、顔から地面に突っ込んだのは誰？", a: "じえい" },
+            { q: "フライを捕った後、必ずグローブの中身を確かめるのは誰？", a: "じえい" },
+            { q: "学校生活では野球と違ってめちゃくちゃ騒がしいのは誰？", a: "マル" },
+            { q: "踊るとキレッキレなのは誰？", a: "リョウスケ" },
+            { q: "居ないと思ったら、いつもトイレに行っているのは誰？", a: "タケル" },
+            { q: "23区大会で見事なバックホームを見せた強肩は誰？", a: "サトシ" },
+            { q: "この1年間で肌が透き通るほど白くなったのは誰？", a: "サトシ" },
+            { q: "1年生の時、代走で猛ダッシュしてアウトになり号泣したのは誰？", a: "テル" },
+            { q: "優勝の瞬間、迷わずロージンを取りに走ったのは誰？", a: "テル" },
+            { q: "守備ポジションから半径30センチしか動かない選手は誰？", a: "カズキ" },
+            { q: "携帯を探していて草むらに顔から突っ込んだのは誰？", a: "ケンゴ" },
+            { q: "レインボーズにいる王子は誰？", a: "ケンゴ" },
+            { q: "声がけがきついと審判に怒られて凹んだコーチは誰？", a: "キヨ" },
+            { q: "めっちゃ怖いけど怒った次の瞬間にはもう笑っているのは誰？", a: "キヨ" },
+            { q: "怒りのあまりバットを投げたのは誰？", a: "キヨ" },
+            { q: "夫婦でシミ取りのピーリングに行ってるのは誰？", a: "キヨ" },
+            { q: "チームのためを思ってファールの誤審をしたのは誰？", a: "オギ" },
+            { q: "「暑いので、ぼくを冷やすものありますか？」と言った主審は誰？", a: "イトテツ" },
+            { q: "誰がどれだけ誘っても決して飲み会に参加しない父は誰？", a: "白メ" },
+            { q: "菓子パンやシュークリームを隠し持っているプーさんは誰？", a: "松居プー" }
+        ];
+
+        let timer;
+        let currentIndex = 0;
+        const soundRoll = document.getElementById('sound-roll');
+        const soundFinish = document.getElementById('sound-finish');
+        const qElement = document.getElementById('question-text');
+        const aElement = document.getElementById('answer-text');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const revealBtn = document.getElementById('reveal-btn');
+
+        function startSlot() {
+            // LINE内での音声再生許可を得るため、開始時に音声をロード
+            soundRoll.play(); 
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            revealBtn.disabled = true;
+            aElement.style.display = "none";
+            
+            timer = setInterval(() => {
+                currentIndex = Math.floor(Math.random() * quizData.length);
+                qElement.innerText = quizData[currentIndex].q;
+            }, 60);
+        }
+
+        function stopSlot() {
+            clearInterval(timer);
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            revealBtn.disabled = false;
+
+            soundRoll.pause();
+            soundRoll.currentTime = 0;
+            soundFinish.play();
+        }
+
+        function revealAnswer() {
+            aElement.innerText = "★ " + quizData[currentIndex].a + " ★";
+            aElement.style.display = "block";
+            revealBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
