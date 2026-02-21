@@ -16,78 +16,83 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
-            -webkit-user-select: none; /* 誤操作によるテキスト選択を防止 */
+            -webkit-user-select: none;
         }
 
         h1 {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 4vw, 1.8rem);
             color: #ffde00;
-            margin: 5px 0;
+            margin: 10px 0;
             text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .slot-machine {
-            background: #333;
+            background: linear-gradient(145deg, #444, #222);
             padding: 15px;
-            border-radius: 15px;
-            border: 4px solid #f1c40f;
+            border-radius: 20px;
+            border: 6px solid #f1c40f;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .display-window {
-            background-color: #eee;
+            background-color: #f8f8f8;
             color: #333;
-            min-height: 250px;
+            min-height: 300px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
             text-align: center;
+            border: 6px inset #ccc;
         }
 
         #question-text {
-            font-size: 1.5rem;
+            font-size: clamp(1.4rem, 5vw, 2.2rem);
             font-weight: bold;
             line-height: 1.4;
             color: #2c3e50;
         }
 
         #answer-text {
-            font-size: 2.5rem;
+            font-size: clamp(2.5rem, 8vw, 4rem);
             font-weight: 900;
             color: #e74c3c;
-            margin-top: 10px;
+            margin-top: 15px;
             display: none;
             background: #ffff00;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 4px solid #e67e22;
         }
 
         .btn-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
         }
 
         .btn {
-            padding: 20px 0;
-            font-size: 1.2rem;
+            padding: clamp(18px, 5vw, 25px) 0;
+            font-size: clamp(1.1rem, 4vw, 1.6rem);
             font-weight: bold;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
-            box-shadow: 0 4px #999;
-            touch-action: manipulation; /* 連打時のズームを防止 */
+            box-shadow: 0 6px #999;
+            touch-action: manipulation;
+            transition: 0.1s;
         }
 
         .btn:active {
             box-shadow: none;
-            transform: translateY(4px);
+            transform: translateY(6px);
         }
 
         #start-btn { background-color: #ff0000; color: white; }
@@ -111,7 +116,7 @@
 
     <div class="slot-machine">
         <div class="display-window">
-            <div id="question-text">LINEでクイズ！<br>スタートを押してね</div>
+            <div id="question-text">卒団おめでとう！<br>スタートしてね！</div>
             <div id="answer-text">？？？</div>
         </div>
 
@@ -129,27 +134,29 @@
         const quizData = [
             { q: "お弁当でいつもいくらを食べているのは誰？", a: "ルイ" },
             { q: "体重が60キロに迫っているのは誰？", a: "ルイ" },
-            { q: "練習試合中に、コーチャーで立ったまま居眠りをしてしまったのは誰？", a: "ルイ" },
+            { q: "練習試合中、コーチャーで立ったまま居眠りしてしまったのは誰？", a: "ルイ" },
             { q: "保冷バッグの中にミニゼリー30個詰めてるのは誰？", a: "ルイ" },
             { q: "パンイチでカリスマックスを踊るのは誰？", a: "シュンゴ" },
             { q: "6年間で一番体型が別人級に変わったのは誰？", a: "シュンゴ" },
-            { q: "大事な公式戦の最中、電柱にぶつかって大怪我をしたのは誰？", a: "ユウセイ" },
+            { q: "大事な公式戦が続いている最中、電柱にぶつかって大怪我したのは誰？", a: "ユウセイ" },
             { q: "イケメンなのに、いつも荷物がごちゃごちゃなのは誰？", a: "ユキト" },
-            { q: "優柔不断な友人を入部させるため、母に直談判したのは誰？", a: "ユキト" },
+            { q: "「ゆうせいと野球がしたい」と母に言って入部させたのは誰？", a: "ユキト" },
             { q: "5年生の夏休み、台風で岐阜まで4時間かかったのは誰？", a: "ユキト" },
             { q: "前日にレバーを食べ過ぎて鼻血を出しながら守っていたのは誰？", a: "そうま" },
-            { q: "試合後、草むらで泣いていると思ったら、お漏らししていたのは誰？", a: "はると" },
+            { q: "試合後、草むらでお漏らししていたのは誰？", a: "はると" },
             { q: "ベースに顔面から突っ込む率が高いのは誰？", a: "はると" },
-            { q: "外野フライを捕った直後、顔から地面に突っ込んだのは誰？", a: "じえい" },
-            { q: "フライを捕った後、必ずグローブの中身を確かめるのは誰？", a: "じえい" },
+            { q: "フライを捕った直後、顔から地面に突っ込んだのは誰？", a: "じえい" },
+            { q: "フライを捕った後、必ずグローブのボールを確かめるのは誰？", a: "じえい" },
             { q: "学校生活では野球と違ってめちゃくちゃ騒がしいのは誰？", a: "マル" },
             { q: "踊るとキレッキレなのは誰？", a: "リョウスケ" },
             { q: "居ないと思ったら、いつもトイレに行っているのは誰？", a: "タケル" },
+            { q: "「無死満塁男」と呼ばれたのは誰？", a: "タケル" },
             { q: "23区大会で見事なバックホームを見せた強肩は誰？", a: "サトシ" },
             { q: "この1年間で肌が透き通るほど白くなったのは誰？", a: "サトシ" },
-            { q: "1年生の時、代走で猛ダッシュしてアウトになり号泣したのは誰？", a: "テル" },
-            { q: "優勝の瞬間、迷わずロージンを取りに走ったのは誰？", a: "テル" },
+            { q: "1年生の時、ルール無視の猛ダッシュをして号泣したのは誰？", a: "テル" },
+            { q: "優勝した瞬間、迷わずロージンを取りに走ったのは誰？", a: "テル" },
             { q: "守備ポジションから半径30センチしか動かない選手は誰？", a: "カズキ" },
+            { q: "3ボールから勝手に四球と決めつけ、ストライクなのに走り出したのは誰？", a: "カズキ" },
             { q: "携帯を探していて草むらに顔から突っ込んだのは誰？", a: "ケンゴ" },
             { q: "レインボーズにいる王子は誰？", a: "ケンゴ" },
             { q: "声がけがきついと審判に怒られて凹んだコーチは誰？", a: "キヨ" },
@@ -159,7 +166,9 @@
             { q: "チームのためを思ってファールの誤審をしたのは誰？", a: "オギ" },
             { q: "「暑いので、ぼくを冷やすものありますか？」と言った主審は誰？", a: "イトテツ" },
             { q: "誰がどれだけ誘っても決して飲み会に参加しない父は誰？", a: "白メ" },
-            { q: "菓子パンやシュークリームを隠し持っているプーさんは誰？", a: "松居プー" }
+            { q: "菓子パンやシュークリームを隠し持っているプーさんは誰？", a: "松居プー" },
+            { q: "ファールが直撃し、「妹を見てないバチが当たった」と言われた母は誰？", a: "舞ちゃん" },
+            { q: "チームの雰囲気が悪くなると眉間にシワがよる室井刑事は誰？", a: "竹内父" }
         ];
 
         let timer;
@@ -173,8 +182,7 @@
         const revealBtn = document.getElementById('reveal-btn');
 
         function startSlot() {
-            // LINE内での音声再生許可を得るため、開始時に音声をロード
-            soundRoll.play(); 
+            soundRoll.play().catch(() => {}); 
             startBtn.disabled = true;
             stopBtn.disabled = false;
             revealBtn.disabled = true;
@@ -194,7 +202,7 @@
 
             soundRoll.pause();
             soundRoll.currentTime = 0;
-            soundFinish.play();
+            soundFinish.play().catch(() => {});
         }
 
         function revealAnswer() {
