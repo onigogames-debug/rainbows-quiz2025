@@ -2,106 +2,141 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>卒団記念クイズ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>レインボーズ 2025年度卒団記念クイズ</title>
     <style>
-        body {
-            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
+        :root {
+            --bg-color: #1a1a1a;
+            --main-yellow: #f1c40f;
+            --stop-blue: #0055ff;
+            --start-red: #ff0000;
+        }
+
+        body, html {
+            height: 100%;
             margin: 0;
-            padding: 10px;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 95vw;
+            height: 95vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            justify-content: space-between;
+            padding: 2vh 0;
             box-sizing: border-box;
-            -webkit-user-select: none;
+        }
+
+        .header-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
-            font-size: clamp(1rem, 4vw, 1.8rem);
-            color: #ffde00;
-            margin: 10px 0;
-            text-align: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: clamp(24px, 4vh, 48px);
+            color: var(--main-yellow);
+            margin: 0;
+            text-shadow: 3px 3px 0 #d35400;
+        }
+
+        #counter {
+            font-size: 2.5vh;
+            color: #aaa;
+            margin-top: 5px;
         }
 
         .slot-machine {
-            background: linear-gradient(145deg, #444, #222);
-            padding: 15px;
-            border-radius: 20px;
-            border: 6px solid #f1c40f;
+            background: linear-gradient(180deg, #444, #111);
             width: 100%;
-            max-width: 600px;
+            flex: 1;
+            margin: 2vh 0;
+            border: 1vh solid var(--main-yellow);
+            border-radius: 30px;
+            box-shadow: 0 0 80px rgba(241, 196, 15, 0.3);
+            display: flex;
+            flex-direction: column;
+            padding: 3vh;
             box-sizing: border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-height: 0;
         }
 
         .display-window {
-            background-color: #f8f8f8;
-            color: #333;
-            min-height: 300px;
+            background-color: #f0f0f0;
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 15px;
+            padding: 2vh 4vw;
+            border: 0.8vh inset #888;
             text-align: center;
-            border: 6px inset #ccc;
+            overflow: hidden;
+            position: relative;
         }
 
         #question-text {
-            font-size: clamp(1.4rem, 5vw, 2.2rem);
-            font-weight: bold;
-            line-height: 1.4;
+            font-size: clamp(24px, 6vh, 80px);
+            font-weight: 900;
             color: #2c3e50;
+            line-height: 1.3;
+            width: 100%;
         }
 
         #answer-text {
-            font-size: clamp(2.5rem, 8vw, 4rem);
+            position: absolute;
+            font-size: clamp(40px, 12vh, 150px);
             font-weight: 900;
             color: #e74c3c;
-            margin-top: 15px;
-            display: none;
             background: #ffff00;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 4px solid #e67e22;
+            padding: 1vh 5vw;
+            border-radius: 20px;
+            border: 0.8vh solid #e67e22;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10;
         }
 
         .btn-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            height: 15vh;
+            display: flex;
+            gap: 3vw;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
         .btn {
-            padding: clamp(18px, 5vw, 25px) 0;
-            font-size: clamp(1.1rem, 4vw, 1.6rem);
+            height: 10vh;
+            padding: 0 5vw;
+            font-size: clamp(18px, 4vh, 40px);
             font-weight: bold;
             border: none;
-            border-radius: 15px;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 6px #999;
-            touch-action: manipulation;
+            box-shadow: 0 0.8vh #999;
             transition: 0.1s;
+            white-space: nowrap;
         }
 
         .btn:active {
             box-shadow: none;
-            transform: translateY(6px);
+            transform: translateY(0.8vh);
         }
 
-        #start-btn { background-color: #ff0000; color: white; }
-        #stop-btn { background-color: #0000ff; color: white; }
-        #reveal-btn { 
-            background-color: #f1c40f; color: black; 
-            grid-column: span 2;
-            margin-top: 5px;
-        }
+        #start-btn { background-color: var(--start-red); color: white; }
+        #stop-btn { background-color: var(--stop-blue); color: white; }
+        #reveal-btn { background-color: var(--main-yellow); color: black; }
 
         .btn:disabled {
             background-color: #555 !important;
@@ -112,104 +147,148 @@
 </head>
 <body>
 
-    <h1>⚾️ レインボーズ 2025年度卒団クイズ ⚾️</h1>
+<div class="container">
+    <div class="header-area">
+        <h1>⚾️ レインボーズ 2025年度卒団記念クイズ ⚾️</h1>
+        <div id="counter">のこり：-- 問 / 全 -- 問</div>
+    </div>
 
     <div class="slot-machine">
         <div class="display-window">
-            <div id="question-text">卒団おめでとう！<br>スタートしてね！</div>
+            <div id="question-text">準備はいいかな？<br>スタートしてね！</div>
             <div id="answer-text">？？？</div>
-        </div>
-
-        <div class="btn-container">
-            <button id="start-btn" class="btn" onclick="startSlot()">スタート！</button>
-            <button id="stop-btn" class="btn" onclick="stopSlot()" disabled>ストップ！</button>
-            <button id="reveal-btn" class="btn" onclick="revealAnswer()" disabled>正解発表</button>
         </div>
     </div>
 
-    <audio id="sound-roll" src="https://otologic.jp/files/free/se/pdf/Drum-Roll01-1.mp3" loop preload="auto"></audio>
-    <audio id="sound-finish" src="https://otologic.jp/files/free/se/pdf/Drum-Roll01-Finish01.mp3" preload="auto"></audio>
+    <div class="btn-container">
+        <button id="start-btn" class="btn" onclick="startSlot()">スタート！</button>
+        <button id="stop-btn" class="btn" onclick="stopSlot()" disabled>ストップ！</button>
+        <button id="reveal-btn" class="btn" onclick="revealAnswer()" disabled>正解発表</button>
+    </div>
+</div>
 
-    <script>
-        const quizData = [
-            { q: "お弁当でいつもいくらを食べているのは誰？", a: "ルイ" },
-            { q: "体重が60キロに迫っているのは誰？", a: "ルイ" },
-            { q: "練習試合中、コーチャーで立ったまま居眠りしてしまったのは誰？", a: "ルイ" },
-            { q: "保冷バッグの中にミニゼリー30個詰めてるのは誰？", a: "ルイ" },
-            { q: "パンイチでカリスマックスを踊るのは誰？", a: "シュンゴ" },
-            { q: "6年間で一番体型が別人級に変わったのは誰？", a: "シュンゴ" },
-            { q: "大事な公式戦が続いている最中、電柱にぶつかって大怪我したのは誰？", a: "ユウセイ" },
-            { q: "イケメンなのに、いつも荷物がごちゃごちゃなのは誰？", a: "ユキト" },
-            { q: "「ゆうせいと野球がしたい」と母に言って入部させたのは誰？", a: "ユキト" },
-            { q: "5年生の夏休み、台風で岐阜まで4時間かかったのは誰？", a: "ユキト" },
-            { q: "前日にレバーを食べ過ぎて鼻血を出しながら守っていたのは誰？", a: "そうま" },
-            { q: "試合後、草むらでお漏らししていたのは誰？", a: "はると" },
-            { q: "ベースに顔面から突っ込む率が高いのは誰？", a: "はると" },
-            { q: "フライを捕った直後、顔から地面に突っ込んだのは誰？", a: "じえい" },
-            { q: "フライを捕った後、必ずグローブのボールを確かめるのは誰？", a: "じえい" },
-            { q: "学校生活では野球と違ってめちゃくちゃ騒がしいのは誰？", a: "マル" },
-            { q: "踊るとキレッキレなのは誰？", a: "リョウスケ" },
-            { q: "居ないと思ったら、いつもトイレに行っているのは誰？", a: "タケル" },
-            { q: "「無死満塁男」と呼ばれたのは誰？", a: "タケル" },
-            { q: "23区大会で見事なバックホームを見せた強肩は誰？", a: "サトシ" },
-            { q: "この1年間で肌が透き通るほど白くなったのは誰？", a: "サトシ" },
-            { q: "1年生の時、ルール無視の猛ダッシュをして号泣したのは誰？", a: "テル" },
-            { q: "優勝した瞬間、迷わずロージンを取りに走ったのは誰？", a: "テル" },
-            { q: "守備ポジションから半径30センチしか動かない選手は誰？", a: "カズキ" },
-            { q: "3ボールから勝手に四球と決めつけ、ストライクなのに走り出したのは誰？", a: "カズキ" },
-            { q: "携帯を探していて草むらに顔から突っ込んだのは誰？", a: "ケンゴ" },
-            { q: "レインボーズにいる王子は誰？", a: "ケンゴ" },
-            { q: "声がけがきついと審判に怒られて凹んだコーチは誰？", a: "キヨ" },
-            { q: "めっちゃ怖いけど怒った次の瞬間にはもう笑っているのは誰？", a: "キヨ" },
-            { q: "怒りのあまりバットを投げたのは誰？", a: "キヨ" },
-            { q: "夫婦でシミ取りのピーリングに行ってるのは誰？", a: "キヨ" },
-            { q: "チームのためを思ってファールの誤審をしたのは誰？", a: "オギ" },
-            { q: "「暑いので、ぼくを冷やすものありますか？」と言った主審は誰？", a: "イトテツ" },
-            { q: "誰がどれだけ誘っても決して飲み会に参加しない父は誰？", a: "白メ" },
-            { q: "菓子パンやシュークリームを隠し持っているプーさんは誰？", a: "松居プー" },
-            { q: "ファールが直撃し、「妹を見てないバチが当たった」と言われた母は誰？", a: "舞ちゃん" },
-            { q: "チームの雰囲気が悪くなると眉間にシワがよる室井刑事は誰？", a: "竹内父" }
-        ];
+<audio id="sound-roll" src="https://otologic.jp/files/free/se/pdf/Drum-Roll01-1.mp3" loop preload="auto"></audio>
+<audio id="sound-stop" src="https://otologic.jp/files/free/se/pdf/Drum-Roll01-Finish01.mp3" preload="auto"></audio>
+<audio id="sound-correct" src="https://otologic.jp/files/free/se/pdf/Quiz-Correct_Answer02-1.mp3" preload="auto"></audio>
 
-        let timer;
-        let currentIndex = 0;
-        const soundRoll = document.getElementById('sound-roll');
-        const soundFinish = document.getElementById('sound-finish');
-        const qElement = document.getElementById('question-text');
-        const aElement = document.getElementById('answer-text');
-        const startBtn = document.getElementById('start-btn');
-        const stopBtn = document.getElementById('stop-btn');
-        const revealBtn = document.getElementById('reveal-btn');
+<script>
+    const masterQuizData = [
+        { q: "お弁当でいつもいくらを食べているのは誰？", a: "ルイ" },
+        { q: "体重が60キロに迫っているのは誰？", a: "ルイ" },
+        { q: "練習試合中、コーチャーで立ったまま居眠りしてしまったのは誰？", a: "ルイ" },
+        { q: "保冷バッグの中にミニゼリー30個詰めてるのは誰？", a: "ルイ" },
+        { q: "パンイチでカリスマックスを踊るのは誰？", a: "シュンゴ" },
+        { q: "6年間で一番体型が別人級に変わったのは誰？", a: "シュンゴ" },
+        { q: "大事な公式戦が続いている最中、電柱にぶつかって大怪我したのは誰？", a: "ユウセイ" },
+        { q: "イケメンなのに、いつも荷物がごちゃごちゃなのは誰？", a: "ユキト" },
+        { q: "「ゆうせいと野球がしたい」と母に言って入部させたのは誰？", a: "ユキト" },
+        { q: "5年生の夏休み、台風で岐阜まで4時間かかったのは誰？", a: "ユキト" },
+        { q: "前日にレバーを食べ過ぎて鼻血を出しながら守っていたのは誰？", a: "そうま" },
+        { q: "試合後、草むらでお漏らししていたのは誰？", a: "はると" },
+        { q: "ベースに顔面から突っ込む率が高いのは誰？", a: "はると" },
+        { q: "フライを捕った直後、顔から地面に突っ込んだのは誰？", a: "じえい" },
+        { q: "フライを捕った後、必ずグローブのボールを確かめるのは誰？", a: "じえい" },
+        { q: "学校生活では野球と違ってめちゃくちゃ騒がしいのは誰？", a: "マル" },
+        { q: "踊るとキレッキレなのは誰？", a: "リョウスケ" },
+        { q: "居ないと思ったら、いつもトイレに行っているのは誰？", a: "タケル" },
+        { q: "「無死満塁男」と呼ばれたのは誰？", a: "タケル" },
+        { q: "23区大会で見事なバックホームを見せた強肩は誰？", a: "サトシ" },
+        { q: "この1年間で肌が透き通るほど白くなったのは誰？", a: "サトシ" },
+        { q: "1年生の時、ルール無視の猛ダッシュをして号泣したのは誰？", a: "テル" },
+        { q: "優勝した瞬間、迷わずロージンを取りに走ったのは誰？", a: "テル" },
+        { q: "守備ポジションから半径30センチしか動かない選手は誰？", a: "カズキ" },
+        { q: "3ボールから勝手に四球と決めつけ、ストライクなのに走り出したのは誰？", a: "カズキ" },
+        { q: "携帯を探していて草むらに顔から突っ込んだのは誰？", a: "ケンゴ" },
+        { q: "レインボーズにいる王子は誰？", a: "ケンゴ" },
+        { q: "声がけがきついと審判に怒られて凹んだコーチは誰？", a: "キヨ" },
+        { q: "めっちゃ怖いけど怒った次の瞬間にはもう笑っているのは誰？", a: "キヨ" },
+        { q: "怒りのあまりバットを投げたのは誰？", a: "キヨ" },
+        { q: "夫婦でシミ取りのピーリングに行ってるのは誰？", a: "キヨ" },
+        { q: "チームのためを思ってファールの誤審をしたのは誰？", a: "オギ" },
+        { q: "「暑いので、ぼくを冷やすものありますか？」と言った主審は誰？", a: "イトテツ" },
+        { q: "誰がどれだけ誘っても決して飲み会に参加しない父は誰？", a: "白メ" },
+        { q: "菓子パンやシュークリームを隠し持っているプーさんは誰？", a: "松居プー" },
+        { q: "ファールが直撃し、「妹を見てないバチが当たった」と言われた母は誰？", a: "舞ちゃん" },
+        { q: "チームの雰囲気が悪くなると眉間にシワがよる室井刑事は誰？", a: "竹内父" }
+    ];
 
-        function startSlot() {
-            soundRoll.play().catch(() => {}); 
-            startBtn.disabled = true;
-            stopBtn.disabled = false;
-            revealBtn.disabled = true;
-            aElement.style.display = "none";
-            
-            timer = setInterval(() => {
-                currentIndex = Math.floor(Math.random() * quizData.length);
-                qElement.innerText = quizData[currentIndex].q;
-            }, 60);
+    let quizPool = [...masterQuizData];
+    let timer;
+    let currentIndexInPool = 0;
+
+    const soundRoll = document.getElementById('sound-roll');
+    const soundStop = document.getElementById('sound-stop');
+    const soundCorrect = document.getElementById('sound-correct');
+
+    const qElement = document.getElementById('question-text');
+    const aElement = document.getElementById('answer-text');
+    const counterElement = document.getElementById('counter');
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const revealBtn = document.getElementById('reveal-btn');
+
+    updateCounter();
+
+    function updateCounter() {
+        counterElement.innerText = `のこり：${quizPool.length} 問 / 全 ${masterQuizData.length} 問`;
+    }
+
+    function startSlot() {
+        if (quizPool.length === 0) {
+            if (confirm("全問終了しました！最初からリセットしますか？")) {
+                quizPool = [...masterQuizData];
+                updateCounter();
+                qElement.innerText = "リセット完了！スタートしてね！";
+            }
+            return;
         }
 
-        function stopSlot() {
-            clearInterval(timer);
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            revealBtn.disabled = false;
+        // スロット回転中の音
+        soundRoll.currentTime = 0;
+        soundRoll.play().catch(() => {}); 
+        
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        revealBtn.disabled = true;
+        aElement.style.display = "none";
+        
+        timer = setInterval(() => {
+            currentIndexInPool = Math.floor(Math.random() * quizPool.length);
+            qElement.innerText = quizPool[currentIndexInPool].q;
+        }, 50);
+    }
 
-            soundRoll.pause();
-            soundRoll.currentTime = 0;
-            soundFinish.play().catch(() => {});
-        }
+    function stopSlot() {
+        clearInterval(timer);
+        
+        // 回転音を止めて、停止音（ジャン！）を鳴らす
+        soundRoll.pause();
+        soundStop.currentTime = 0;
+        soundStop.play().catch(() => {});
 
-        function revealAnswer() {
-            aElement.innerText = "★ " + quizData[currentIndex].a + " ★";
-            aElement.style.display = "block";
-            revealBtn.disabled = true;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        revealBtn.disabled = false;
+    }
+
+    function revealAnswer() {
+        // 正解音（ピンポン！）を鳴らす
+        soundCorrect.currentTime = 0;
+        soundCorrect.play().catch(() => {});
+
+        aElement.innerText = "★ " + quizPool[currentIndexInPool].a + " ★";
+        aElement.style.display = "block";
+        revealBtn.disabled = true;
+        
+        quizPool.splice(currentIndexInPool, 1);
+        updateCounter();
+
+        if (quizPool.length === 0) {
+            setTimeout(() => {
+                alert("全問クリアです！卒団おめでとう！");
+            }, 1000);
         }
-    </script>
+    }
+</script>
 </body>
 </html>
